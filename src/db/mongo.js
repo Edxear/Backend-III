@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 const env = require("../config/env");
 
 async function connectMongo() {
+  if (mongoose.connection.readyState === 1) {
+    return;
+  }
+
   await mongoose.connect(env.mongodbUri, {
     dbName: env.mongodbDbName
   });
