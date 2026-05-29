@@ -1,188 +1,158 @@
-# Final Backend III - Entregable final
+# Entregable Final - Backend III
 
-Proyecto backend Node.js con:
-- Tests funcionales completos para `adoption.router.js`
-- Persistencia real en MongoDB
-- Variables de entorno para local, Docker y Render
-- Dockerfile optimizado + Docker Compose
-- Documentacion Swagger/OpenAPI y CI
+## Estructura del proyecto
 
-## 1) Estructura del proyecto
+## Descripcion de la estructura del repositorio
+
+Este repositorio contiene una API en Node.js con Express para el modulo de adopciones, junto con tests funcionales, persistencia MongoDB, Dockerizacion optimizada, documentacion Swagger y CI.
+
+## Arbol de directorios
 
 ```text
 Final Backend III/
-├── .github/workflows/ci.yml
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 ├── src/
+│   ├── config/
+│   │   └── env.js
+│   ├── db/
+│   │   └── mongo.js
+│   ├── models/
+│   │   └── adoption.model.js
+│   ├── controllers/
+│   │   └── adoption.controller.js
+│   ├── repositories/
+│   │   └── adoption.repository.js
+│   ├── routes/
+│   │   └── adoption.router.js
+│   ├── services/
+│   │   └── adoption.service.js
 │   ├── app.js
-│   ├── server.js
-│   ├── config/env.js
-│   ├── controllers/adoption.controller.js
-│   ├── db/mongo.js
-│   ├── models/adoption.model.js
-│   ├── repositories/adoption.repository.js
-│   ├── routes/adoption.router.js
-│   └── services/adoption.service.js
-├── test/functional/adoption.router.test.js
+│   └── server.js
+├── test/
+│   └── functional/
+│       └── adoption.router.test.js
 ├── .env.example
 ├── .env.render.example
 ├── .dockerignore
-├── docker-compose.yml
+├── .gitignore
 ├── Dockerfile
+├── docker-compose.yml
 ├── package.json
 ├── render.yaml
-└── README.md
+├── README.md
+└── ENTREGABLE-GOOGLE-DOCS.md
 ```
 
-## 2) Variables de entorno
+## Proposito de archivos y carpetas principales
 
-Crear `.env` a partir de `.env.example`:
+- `src/routes/adoption.router.js`: define endpoints REST y anotaciones OpenAPI.
+- `src/controllers/adoption.controller.js`: logica HTTP, codigos de respuesta y manejo de errores.
+- `src/services/adoption.service.js`: validaciones de negocio.
+- `src/config/env.js`: centraliza y valida variables de entorno.
+- `src/db/mongo.js`: conexion a MongoDB.
+- `src/models/adoption.model.js`: schema de Mongoose.
+- `src/repositories/adoption.repository.js`: persistencia MongoDB.
+- `test/functional/adoption.router.test.js`: tests funcionales de todos los endpoints.
+- `Dockerfile`: imagen optimizada y segura.
+- `docker-compose.yml`: orquestacion local API + MongoDB.
+- `render.yaml`: declaracion para despliegue en Render.
+- `.github/workflows/ci.yml`: pipeline de integracion continua.
+
+## Tests funcionales
+
+Se encuentra en:
+- `test/functional/adoption.router.test.js`
+
+Incluye cobertura para:
+- `GET /api/adoptions` (200 y 500)
+- `GET /api/adoptions/:id` (200 y 404)
+- `POST /api/adoptions` (201 y 400)
+- `PUT /api/adoptions/:id` (200, 404 y 400)
+- `DELETE /api/adoptions/:id` (200 y 404)
+
+## Decisiones de optimizacion
+
+- `node:20-alpine`: reduce peso base de imagen.
+- Multi-stage build: separa capa de dependencias del runtime.
+- `npm ci --omit=dev`: instala solo lo necesario para produccion.
+- Usuario no root: mejora seguridad del contenedor.
+- Copia selectiva de archivos: minimiza contexto y superficie de ataque.
+
+### Variables de entorno requeridas
 
 ```env
-NODE_ENV=development
+NODE_ENV=production
 PORT=3000
 MONGODB_URI=mongodb://localhost:27017/final_backend_iii
 MONGODB_DB_NAME=final_backend_iii
 ```
 
-Variables para Render en el panel o en `render.yaml`:
-- `NODE_ENV=production`
-- `PORT=3000`
-- `MONGODB_URI=<tu string de conexion de Mongo Atlas o servicio gestionado>`
-- `MONGODB_DB_NAME=final_backend_iii`
+Para Render se usa `MONGODB_URI` remoto y `MONGODB_DB_NAME`.
 
-## 3) Endpoints cubiertos por tests funcionales
+### Log de construccion de imagen Docker
 
-Base URL: `http://localhost:3000`
-
-- `GET /api/adoptions`
-- `GET /api/adoptions/:id`
-- `POST /api/adoptions`
-- `PUT /api/adoptions/:id`
-- `DELETE /api/adoptions/:id`
-
-Estrategia:
-- Mocks/fakes con Jest para aislar servicio
-- Casos de exito
-- Casos de validacion (400)
-- Casos de no encontrado (404)
-- Errores internos (500)
-
-## 4) Evidencia de ejecucion de tests
+Comando ejecutado:
 
 ```bash
-npm test
+docker build -t final-backend-iii:1.0.0 .
 ```
 
-Salida esperada:
+## Imagen Docker
 
-```text
-PASS  test/functional/adoption.router.test.js
-Tests:       11 passed, 11 total
-```
+### Nombre y tag de imagen
 
-## 5) MongoDB local (contenedor)
+- `final-backend-iii:1.0.0`
 
-Levantar MongoDB solo:
+### Evidencia build y ejecucion
 
 ```bash
-docker compose up -d mongo
+docker run -d --name final-backend-iii -p 3000:3000 final-backend-iii:1.0.0
+docker logs final-backend-iii
 ```
 
-Levantar API + MongoDB:
+## Ejecucion del proyecto
+
+### Instrucciones para construir imagen Docker
+
+```bash
+docker build -t final-backend-iii:1.0.0 .
+```
+
+### Instrucciones para ejecutar contenedor
+
+```bash
+docker run -d --name final-backend-iii -p 3000:3000 final-backend-iii:1.0.0
+```
+
+### Instrucciones para ejecutar con MongoDB (compose)
 
 ```bash
 docker compose up -d
-```
-
-Logs:
-
-```bash
 docker compose logs -f api
-docker compose logs -f mongo
 ```
 
-Seed de usuarios de prueba:
+### Instrucciones para correr tests
 
 ```bash
-npm run seed:users
+npm install
+npm test
 ```
 
-Usuarios cargados en MongoDB:
+### Evidencia de ejecucion exitosa
+
+- Tests: ejecutados y aprobados (11/11).
+- Docker: API y MongoDB operativos con `docker compose up -d`.
+- MongoDB: seed de usuarios ejecutado con `npm run seed:users`.
+
+Usuarios insertados para pruebas:
 - admin.finalbackend@example.com (admin)
 - lucia.tester@example.com (user)
 - mateo.qa@example.com (user)
 
-Verificacion directa en Mongo:
+## URLs de entrega
 
-```bash
-docker compose exec mongo mongosh --quiet --eval "db = db.getSiblingDB('final_backend_iii'); db.users.find({}, {_id:0, firstName:1, lastName:1, email:1, role:1}).toArray()"
-```
-
-## 6) Dockerizacion
-
-Decisiones de optimizacion aplicadas:
-- `node:20-alpine`
-- Multi-stage build
-- `npm ci --omit=dev`
-- Usuario no root
-- Copia minima de archivos necesarios
-
-Build de imagen:
-
-```bash
-npm run docker:build
-```
-
-Run de imagen:
-
-```bash
-npm run docker:run
-```
-
-Escaneo basico:
-
-```bash
-npm run docker:scan
-```
-
-## 7) Publicacion en DockerHub
-
-Ejemplo con usuario `edxear`:
-
-```bash
-docker login
-docker tag final-backend-iii:1.0.0 edxear/final-backend-iii:1.0.0
-docker push edxear/final-backend-iii:1.0.0
-```
-
-URL publica esperada:
-- `https://hub.docker.com/r/edxear/final-backend-iii`
-
-## 8) Deploy en Render
-
-1. Subir repositorio a GitHub.
-2. En Render crear servicio `Web Service` con `runtime: Docker` o usar `render.yaml`.
-3. Configurar env vars:
-   - `NODE_ENV`
-   - `PORT`
-   - `MONGODB_URI`
-   - `MONGODB_DB_NAME`
-4. Enlazar Mongo remoto (recomendado Mongo Atlas) en `MONGODB_URI`.
-5. Verificar healthcheck en `/health`.
-
-Nota: para completar deploy en Render se requiere inicio de sesion en dashboard. Si no hay sesion activa, abrir `https://dashboard.render.com` y autenticar antes de crear el servicio.
-
-## 9) Documentacion API
-
-Swagger UI:
-
-```text
-http://localhost:3000/api/docs
-```
-
-## 10) URLs de entrega
-
-Completar antes de entregar:
-- URL repositorio: `https://github.com/TU_USUARIO/TU_REPO`
-- URL DockerHub: `https://hub.docker.com/r/edxear/final-backend-iii`
-- URL Render: `https://<tu-servicio>.onrender.com`
+- URL repositorio completo: `https://github.com/Edxear`
+- URL publica DockerHub: `https://hub.docker.com/r/edxear/final-backend-iii`
+- URL despliegue Render: `https://backend-iii-xfkr.onrender.com`
