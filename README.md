@@ -153,6 +153,13 @@ Usuarios insertados para pruebas:
 
 ## URLs de entrega
 
-- URL repositorio completo: `https://github.com/Edxear`
+- URL repositorio completo: `https://github.com/Edxear/Backend-III`
 - URL publica DockerHub: `https://hub.docker.com/r/edxear/final-backend-iii`
 - URL despliegue Render: `https://backend-iii-xfkr.onrender.com`
+
+## Evidencias finales verificadas
+
+- Render: deploy en estado `live` para commit `d5931ff` (Revise README for project overview and structure).
+- Health en produccion: `https://backend-iii-xfkr.onrender.com/health` responde `{"status":"ok"}`.
+- Swagger en produccion: `https://backend-iii-xfkr.onrender.com/api/docs` disponible.
+- DockerHub: imagen publica `edxear/final-backend-iii:1.0.0` (digest `sha256:32df66290...`).
