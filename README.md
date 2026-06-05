@@ -6,6 +6,13 @@
 
 Este repositorio contiene una API en Node.js con Express para el modulo de adopciones, junto con tests funcionales, persistencia MongoDB, Dockerizacion optimizada, documentacion Swagger y CI.
 
+## URLs de entrega
+
+- URL repositorio completo: `https://github.com/Edxear/Backend-III`
+- URL publica DockerHub: `https://hub.docker.com/r/edxear/final-backend-iii`
+- URL despliegue Render: `https://backend-iii-xfkr.onrender.com`
+
+
 ## Arbol de directorios
 
 ```text
@@ -150,12 +157,6 @@ Usuarios insertados para pruebas:
 - admin.finalbackend@example.com (admin)
 - lucia.tester@example.com (user)
 - mateo.qa@example.com (user)
-
-## URLs de entrega
-
-- URL repositorio completo: `https://github.com/Edxear/Backend-III`
-- URL publica DockerHub: `https://hub.docker.com/r/edxear/final-backend-iii`
-- URL despliegue Render: `https://backend-iii-xfkr.onrender.com`
 
 ## Evidencias finales verificadas
 
